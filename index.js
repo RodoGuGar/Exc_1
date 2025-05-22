@@ -11,7 +11,11 @@ app.get("/temperature", (req, res) => {
 });
 
 app.get("/esteesotroenpoint", (req, res) => {
-  res.json({ valor: "1Hola mundo", timestamp: new Date().toISOString() });
+  res.json({ valor: "Hola mundo", timestamp: new Date().toISOString() });
+});
+
+app.get("/velocidad", (req, res) => {
+  res.json({ nombre: "Rodolfo ", apellido: "Guerra Garcia" });
 });
 
 app.listen(PORT, () => {
