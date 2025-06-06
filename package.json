@@ -1,11 +1,13 @@
 {
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "pg": "^8.16.0"
   },
   "name": "exc_1",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
@@ -21,6 +23,5 @@
     "url": "https://github.com/RodoGuGar/Exc_1/issues"
   },
   "homepage": "https://github.com/RodoGuGar/Exc_1#readme",
-  "devDependencies": {},
   "description": ""
 }
