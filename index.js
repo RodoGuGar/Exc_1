@@ -34,9 +34,48 @@ app.post("/create-data-table", async (req, res) => {
   }
 });
 
+app.delete("/deletetable", async (req, res) => {
+  try {
+    const tableName = "data";
+
+    const checkTable = await pool.query(`SELECT to_regclass($1) AS exists`, [
+      tableName,
+    ]);
+
+    if (checkTable.rows[0].exists) {
+      await pool.query(`
+        DROP TABLE ${tableName};
+      `);
+
+      return res
+        .status(201)
+        .json({ message: "✅ Tabla eliminada exitosamente" });
+    } else {
+      return res.status(200).json({ message: "ℹ La tabla no existe" });
+    }
+  } catch (error) {
+    console.error("❌ Error:", error);
+    res.status(500).json({ error: "Error al procesar la solicitud" });
+  }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Servidor escuchando en el puerto ${PORT}`);
+});
+
+app.post("/savedata", async (req, res) => {
+  const { value } = req.body;
+  const tableName = "data";
+
+  try {
+    await pool.query(`INSERT INTO ${tableName}(value) VALUES ($1)`, [value]);
+
+    return res.status(201).json({ message: "Datos insertados correctamente" });
+  } catch (err) {
+    console.error("❌ Error:", err.message);
+    res.status(500).json({ error: "Error al guardar los datos" });
+  }
 });
 
 app.get("/temperature", (req, res) => {
