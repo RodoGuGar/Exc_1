@@ -20,6 +20,8 @@ app.post("/create-data-table", async (req, res) => {
         CREATE TABLE ${tableName} (
           id SERIAL PRIMARY KEY,
           value TEXT,
+          name TEXT,
+          matricula INT,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
       `);
@@ -65,11 +67,14 @@ app.listen(PORT, () => {
 });
 
 app.post("/savedata", async (req, res) => {
-  const { value } = req.body;
+  const { value, name, matricula } = req.body;
   const tableName = "data";
 
   try {
-    await pool.query(`INSERT INTO ${tableName}(value) VALUES ($1)`, [value]);
+    await pool.query(
+      `INSERT INTO ${tableName}(value, name, matricula) VALUES ($1, $2, $3)`,
+      [value, name, matricula]
+    );
 
     return res.status(201).json({ message: "Datos insertados correctamente" });
   } catch (err) {
