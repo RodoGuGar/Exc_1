@@ -83,6 +83,18 @@ app.post("/savedata", async (req, res) => {
   }
 });
 
+app.get("/get-data"),
+  async (req, res) => {
+    const tableName = "data";
+
+    try {
+      const result = await pool.query(`SELECT * FROM ${tableName}`);
+      return res.json(result.rows);
+    } catch (err) {
+      return res.status(500).json({ error: "Imposible regresar los datos" });
+    }
+  };
+
 app.get("/temperature", (req, res) => {
   res.json({ valor: "10 °C", timestamp: new Date().toISOString() });
 });
