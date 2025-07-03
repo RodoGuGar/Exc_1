@@ -61,7 +61,7 @@ app.delete("/deletetable", async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3002;
 app.listen(PORT, () => {
   console.log(`🚀 Servidor escuchando en el puerto ${PORT}`);
 });
@@ -83,18 +83,17 @@ app.post("/savedata", async (req, res) => {
   }
 });
 
-app.get("/get-data"),
-  async (req, res) => {
-    const tableName = "data";
+app.get("/get-data", async (req, res) => {
+  const tableName = "data";
 
-    try {
-      const result = await pool.query(`SELECT * FROM ${tableName}`);
-      return res.json(result.rows);
-    } catch (err) {
-      return res.status(500).json({ error: "Imposible regresar los datos" });
-    }
-  };
-
+  try {
+    const result = await pool.query(`SELECT * FROM ${tableName}`);
+    return res.json(result.rows);
+  } catch {
+    return res.status(500).json({ error: "Imposible regresar los datos" });
+  }
+});
+/*
 app.get("/temperature", (req, res) => {
   res.json({ valor: "10 °C", timestamp: new Date().toISOString() });
 });
@@ -113,4 +112,4 @@ app.get("/UTLD", (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server corriendo en puerto ${PORT}`);
-});
+});*/
