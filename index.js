@@ -17,13 +17,12 @@ app.post("/create-data-table", async (req, res) => {
 
     if (!checkTable.rows[0].exists) {
       await pool.query(`
-        CREATE TABLE ${tableName} (
-          id SERIAL PRIMARY KEY,
-          value TEXT,
-          name TEXT,
-          matricula INT,
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
+        CREATE TABLE device_logs (
+        id SERIAL PRIMARY KEY,
+        action VARCHAR(50) NOT NULL,
+        "user" TEXT NOT NULL,
+        enroll_id TEXT NOT NULL,
+        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP)
       `);
 
       return res.status(201).json({ message: "✅ Tabla creada exitosamente" });
@@ -58,6 +57,26 @@ app.delete("/deletetable", async (req, res) => {
   } catch (error) {
     console.error("❌ Error:", error);
     res.status(500).json({ error: "Error al procesar la solicitud" });
+  }
+});
+
+app.post("/turn-on", async (req, res) => {
+  const { user, enrollId } = req.body;
+  deviceStatus.isOn = true;
+
+  try {
+    await pool.query(
+      `INSERT INTO device_logs (action, "user", enroll_id) VALUES ($1, $2, $3)`,
+      ["turn-on", user, enrollId]
+    );
+
+    return res.json({
+      message: "Dispositivo encendido",
+      status: deviceStatus,
+    });
+  } catch (err) {
+    console.error("Error al guardar log:", err);
+    return res.status(500).json({ error: "Error al guardar log" });
   }
 });
 
