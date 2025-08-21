@@ -243,26 +243,27 @@ app.post("/save-data", async (req, res) => {
   }
 });
 
+// GET obtener la última config WiFi
 app.get("/wifi-config", async (req, res) => {
   try {
     const { rows } = await pool.query(
-      "SELECT red, contrasena FROM wifi_config ORDER BY id DESC LIMIT 1"
+      "SELECT ssid, password FROM wifi_credentials ORDER BY id DESC LIMIT 1"
     );
     if (rows.length > 0) res.json(rows[0]);
-    else res.json({ red: "", contrasena: "" });
+    else res.json({ ssid: "", password: "" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Error obteniendo configuración WiFi" });
   }
 });
 
-// POST actualizar config WiFi
+// POST guardar config WiFi
 app.post("/wifi-config", async (req, res) => {
   try {
-    const { red, contrasena } = req.body;
+    const { ssid, password } = req.body;
     await pool.query(
-      "INSERT INTO wifi_config (red, contrasena) VALUES ($1, $2)",
-      [red, contrasena]
+      "INSERT INTO wifi_credentials (ssid, password) VALUES ($1, $2)",
+      [ssid, password]
     );
     res.json({ ok: true });
   } catch (err) {
