@@ -243,6 +243,34 @@ app.post("/save-data", async (req, res) => {
   }
 });
 
+app.get("/wifi-config", async (req, res) => {
+  try {
+    const { rows } = await pool.query(
+      "SELECT red, contrasena FROM wifi_config ORDER BY id DESC LIMIT 1"
+    );
+    if (rows.length > 0) res.json(rows[0]);
+    else res.json({ red: "", contrasena: "" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error obteniendo configuración WiFi" });
+  }
+});
+
+// POST actualizar config WiFi
+app.post("/wifi-config", async (req, res) => {
+  try {
+    const { red, contrasena } = req.body;
+    await pool.query(
+      "INSERT INTO wifi_config (red, contrasena) VALUES ($1, $2)",
+      [red, contrasena]
+    );
+    res.json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error guardando configuración WiFi" });
+  }
+});
+
 /*
 app.get("/temperature", (req, res) => {
   res.json({ valor: "10 °C", timestamp: new Date().toISOString() });
