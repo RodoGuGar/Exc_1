@@ -272,23 +272,35 @@ app.post("/wifi-config", async (req, res) => {
   }
 });
 
-/*
-app.get("/temperature", (req, res) => {
-  res.json({ valor: "10 °C", timestamp: new Date().toISOString() });
+/* =============================
+   ENDPOINTS DE LOGS
+============================= */
+app.post("/logs", async (req, res) => {
+  try {
+    const { action, user } = req.body;
+    if (!action || !user)
+      return res.status(400).json({ error: "Faltan datos" });
+
+    await pool.query(
+      `INSERT INTO device_logs (action, "user", enroll_id) VALUES ($1, $2, $3)`,
+      [action, user, "N/A"]
+    );
+
+    return res.status(201).json({ message: "Log guardado correctamente" });
+  } catch (err) {
+    console.error("Error POST /logs:", err.message);
+    return res.status(500).json({ error: "Error guardando log" });
+  }
 });
 
-app.get("/esteesotroenpoint", (req, res) => {
-  res.json({ valor: "Hola mundo", timestamp: new Date().toISOString() });
+app.get("/logs", async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT * FROM device_logs ORDER BY timestamp DESC`
+    );
+    return res.json(result.rows);
+  } catch (err) {
+    console.error("Error GET /logs:", err.message);
+    return res.status(500).json({ error: "Error obteniendo logs" });
+  }
 });
-
-app.get("/velocidad", (req, res) => {
-  res.json({ nombre: "Rodolfo ", apellido: "Guerra Garcia" });
-});
-
-app.get("/UTLD", (req, res) => {
-  res.json({ tipo: "Universidad Tecnologica", locacion: "De La Laguna" });
-});
-
-app.listen(PORT, () => {
-  console.log(`Server corriendo en puerto ${PORT}`);
-});*/
